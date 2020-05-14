@@ -12,6 +12,7 @@ on screen showing the direction and color depending on how much power is used.
 public class PlayerControler : MonoBehaviour{
 
     [Header("Jump Settings")]
+    public bool touchEnabled = true;
     public float jumpPower;
     public Vector2 lineMinPower;
     public Vector2 lineMaxPower;
@@ -48,7 +49,9 @@ public class PlayerControler : MonoBehaviour{
 
 
     private void Update() {
-        CalculateJump();
+        if (touchEnabled) {
+            CalculateJump();
+        }
     }
 
     private void CalculateJump() {
