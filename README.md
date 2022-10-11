@@ -1,6 +1,6 @@
 # JumpyBoi_Game
 Mobile prototype based off Jump King.
 
-![image](https://user-images.githubusercontent.com/13463782/177431526-0f3aaca9-eae8-4323-8b25-8acb34196622.png)
+![jumpyjones](https://user-images.githubusercontent.com/13463782/195161312-b47906af-fba2-4849-8f3d-ab23e50a28ec.png)
 
-https://youtu.be/gd6AqAymQfI
+https://youtu.be/sVY81_CWE58
