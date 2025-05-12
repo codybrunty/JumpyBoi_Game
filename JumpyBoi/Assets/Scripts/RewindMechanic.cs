@@ -18,31 +18,50 @@ public class RewindMechanic : MonoBehaviour{
     [SerializeField] GameObject player = default;
     [SerializeField] CameraZones zones = default;
 
+    [Header("UI")]
+    [SerializeField] Button rewindButton;
+    [SerializeField] UI_JumpCounter jumpCounter;
+
+    PlayerPositionService posService;
+    SaveLoadService saveLoadService;
+    StatsService statsService;
 
     private void Start() {
+        posService = ServiceLocator.GetService<PlayerPositionService>();
+        saveLoadService = ServiceLocator.GetService<SaveLoadService>();
+        statsService = ServiceLocator.GetService<StatsService>();
         SetRewindPositionFromPositionManager();
     }
 
     //Get the users rewind info from the position manager.
     private void SetRewindPositionFromPositionManager() {
-        gameObject.GetComponent<Button>().interactable = true;
-        rewindPosition = PositionManager.PM.rewindPosition;
-        rewindZoneIndex = PositionManager.PM.rewindZoneIndex;
+        rewindButton.interactable = true;
+        rewindPosition = posService.GetRewindPosition();
+        rewindZoneIndex = posService.GetRewindZoneIndex();
     }
 
     //Before the player jumps the position of the player and the camera zone is recorded into the rewind button
     //and saved into the position manager.
-    public void SavePosition(Vector3 pos) {
-        gameObject.GetComponent<Button>().interactable = true;
+    public void SaveRewindPosition(Vector3 pos) {
+        rewindButton.interactable = true;
         rewindPosition = pos;
         rewindZoneIndex = zones.zoneIndex;
-        PositionManager.PM.SaveRewindPosition(rewindPosition, rewindZoneIndex);
+        posService.SaveRewindPosition(rewindPosition, rewindZoneIndex);
     }
 
     //On button click the player is moved to the rewind position. And the camera is moved to the rewind camera position.
     public void RewindOnClick() {
-        gameObject.GetComponent<Button>().interactable = false;
+        rewindButton.interactable = false;
         zones.ZoneChangeByIndex(rewindZoneIndex);
         player.transform.position = rewindPosition;
+    }
+
+    public void FullRewindOnClick() {
+        saveLoadService.DeleteAllPlayerPrefs();
+        statsService.ResetLocalStats();
+        posService.LoadPlayerAndRewindPosition();
+        SetRewindPositionFromPositionManager();
+        RewindOnClick();
+        jumpCounter.UpdateJumpCounterText();
     }
 }

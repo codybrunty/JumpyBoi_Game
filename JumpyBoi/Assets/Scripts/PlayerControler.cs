@@ -28,31 +28,37 @@ public class PlayerControler : MonoBehaviour{
 
     [Header("Jump Game Objects")]
     [SerializeField] GroundMechanic groundBox = default;
-    [SerializeField] RewindMechanic rewindButton = default;
-    [SerializeField] JumpCounter jumpCounter = default;
+    [SerializeField] UI_JumpCounter jumpcounter;
+    private RewindMechanic rewindMechanics;
     private Camera mainCam;
     private Rigidbody2D rb;
     private LineRenderer line;
-
+    PlayerPositionService posService;
+    StatsService statsService;
 
     private void Start() {
         mainCam = Camera.main;
         line = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        SetPlayerPositionFromPositionManager();
+        rewindMechanics = GetComponent<RewindMechanic>();
+        posService = ServiceLocator.GetService<PlayerPositionService>();
+        statsService = ServiceLocator.GetService<StatsService>();
+        SetPlayerPosition();
     }
-
-    //Get saved player position from the Position Manager and set player to that position.
-    private void SetPlayerPositionFromPositionManager() {
-        gameObject.transform.position = PositionManager.PM.playerPosition;
-    }
-
-
     private void Update() {
         if (touchEnabled) {
             CalculateJump();
         }
     }
+
+    #region Position
+    //Get saved player position from the Position Manager and set player to that position.
+    private void SetPlayerPosition() {
+        gameObject.transform.position = posService.GetPlayerPosition();
+    }
+    #endregion
+
+    #region Jump
 
     private void CalculateJump() {
         
@@ -79,8 +85,9 @@ public class PlayerControler : MonoBehaviour{
         //for the calculation of the jump force and added to the players rigidbody. The line renderer is reset.
         if (Input.GetMouseButtonUp(0) && clicked == true) {
 
-            rewindButton.SavePosition(gameObject.transform.position);
-            jumpCounter.AddOneJump();
+            rewindMechanics.SaveRewindPosition(gameObject.transform.position);
+            statsService.IncrementStat("Jumps");
+            jumpcounter.UpdateJumpCounterText();
 
             endPoint = mainCam.ScreenToWorldPoint(Input.mousePosition);
             endPoint.z = 0;
@@ -93,7 +100,9 @@ public class PlayerControler : MonoBehaviour{
             clicked = false;
         }
     }
+    #endregion
 
+    #region Line
     //Draw a line with the line renderer between two points
     public void DrawLine(Vector3 start, Vector3 end) {
         line.positionCount = 2;
@@ -133,4 +142,10 @@ public class PlayerControler : MonoBehaviour{
     public void EndLine() {
         line.positionCount = 0;
     }
+    public void TeleportTo(Vector3 position) {
+        transform.position = position;
+        rb.velocity = Vector2.zero;
+    }
+    #endregion
+
 }

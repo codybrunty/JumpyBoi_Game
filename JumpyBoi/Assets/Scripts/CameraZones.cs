@@ -15,15 +15,17 @@ public class CameraZones : MonoBehaviour{
     private GameObject topZone;
     private GameObject botZone;
     public int zoneIndex = 0;
+    PlayerPositionService posService;
 
     private void Start() {
         mainCam = Camera.main;
+        posService = ServiceLocator.GetService<PlayerPositionService>();
         SetZoneIndexFromPositionManager();
     }
 
     //At start get Saved Position From Position Manager of last login.
     public void SetZoneIndexFromPositionManager() {
-        ZoneChangeByIndex(PositionManager.PM.playerZoneIndex);
+        ZoneChangeByIndex(posService.GetPlayerZoneIndex());
     }
 
     //Called by zones to move the Camera up and down by one. Top zone we go up, bot we go down. 
