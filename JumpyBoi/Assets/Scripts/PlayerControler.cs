@@ -28,7 +28,6 @@ public class PlayerControler : MonoBehaviour{
 
     [Header("Jump Game Objects")]
     [SerializeField] GroundMechanic groundBox = default;
-    [SerializeField] UI_JumpCounter jumpcounter;
     private RewindMechanic rewindMechanics;
     private Camera mainCam;
     private Rigidbody2D rb;
@@ -87,7 +86,7 @@ public class PlayerControler : MonoBehaviour{
 
             rewindMechanics.SaveRewindPosition(gameObject.transform.position);
             statsService.IncrementStat("Jumps");
-            jumpcounter.UpdateJumpCounterText();
+            EventBus.Publish("PlayerJumped");
 
             endPoint = mainCam.ScreenToWorldPoint(Input.mousePosition);
             endPoint.z = 0;

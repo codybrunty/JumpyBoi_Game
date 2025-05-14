@@ -22,5 +22,13 @@ public class UI_JumpCounter : MonoBehaviour{
         int jumpTotal = statsService.GetStat("Jumps");
         jumpCounterText.text = "Jumps: "+ jumpTotal;
     }
+    private void OnEnable() {
+        EventBus.Subscribe("PlayerJumped", UpdateJumpCounterText);
+        EventBus.Subscribe("FullRewind", UpdateJumpCounterText);
+    }
 
+    private void OnDisable() {
+        EventBus.Unsubscribe("PlayerJumped", UpdateJumpCounterText);
+        EventBus.Unsubscribe("FullRewind", UpdateJumpCounterText);
+    }
 }

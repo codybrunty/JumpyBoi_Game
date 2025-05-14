@@ -20,7 +20,6 @@ public class RewindMechanic : MonoBehaviour{
 
     [Header("UI")]
     [SerializeField] Button rewindButton;
-    [SerializeField] UI_JumpCounter jumpCounter;
 
     PlayerPositionService posService;
     SaveLoadService saveLoadService;
@@ -62,6 +61,6 @@ public class RewindMechanic : MonoBehaviour{
         posService.LoadPlayerAndRewindPosition();
         SetRewindPositionFromPositionManager();
         RewindOnClick();
-        jumpCounter.UpdateJumpCounterText();
+        EventBus.Publish("FullRewind");
     }
 }
