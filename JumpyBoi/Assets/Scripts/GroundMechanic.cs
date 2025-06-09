@@ -11,7 +11,12 @@ public class GroundMechanic : MonoBehaviour{
 
     public bool grounded = false;
     public int groundCounter = 0;
-    [SerializeField] CameraZones zones=default; 
+    [SerializeField] CameraZones zones=default;
+    PlayerPositionService posService;
+
+    private void Start() {
+        posService = ServiceLocator.GetService<PlayerPositionService>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.name == "Ground") {
@@ -37,7 +42,7 @@ public class GroundMechanic : MonoBehaviour{
 
     //Record the position of player into the Position Manager everytime we hit the ground.
     private void RecordPlayerPosition() {
-        PositionManager.PM.SavePlayerPosition(gameObject.transform.parent.transform.position, zones.zoneIndex);
+        posService.SavePlayerPosition(gameObject.transform.parent.transform.position, zones.zoneIndex);
     }
 
 }
